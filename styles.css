@@ -1,0 +1,86 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #0d0d0d;
+  color: #fff;
+  width: 100%;
+  height: 20%;
+}
+
+h1 {
+  margin: 0;
+  letter-spacing: 0.3em;
+}
+
+.headingLetter1 {
+  animation: pulsate 2.51s ease-in-out infinite alternate;
+}
+
+.headingLetter2 {
+  animation: pulsate 2.21s ease-in-out infinite alternate;
+}
+
+.headingLetter3 {
+  animation: pulsate 1.91s ease-in-out infinite alternate;
+}
+
+.headingLetter4 {
+  animation: pulsate 1.51s ease-in-out infinite alternate;
+}
+
+.headingLetter5 {
+  animation: pulsate 2.1s ease-in-out infinite alternate;
+}
+
+.headingLetter6 {
+  animation: pulsate 1.81s ease-in-out infinite alternate;
+}
+
+.headingLetter7 {
+  animation: pulsate 2.51s ease-in-out infinite alternate;
+}
+
+.headingLetter8 {
+  animation: pulsate 1.91s ease-in-out infinite alternate;
+}
+
+.headingLetter9 {
+  animation: pulsate 2.21s ease-in-out infinite alternate;
+}
+
+@keyframes pulsate {
+  100% {
+    /* Larger blur radius */
+    text-shadow: 0 0 14px #fff, 0 0 21px #fff, 0 0 29px #fff, 0 0 40px #f09,
+      0 0 60px #f09, 0 0 20px #f09, 0 0 60px #f09, 0 0 50px #f09;
+  }
+  0% {
+    /* A slightly smaller blur radius */
+    text-shadow: 0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff, 0 0 38px #f09,
+      0 0 53px #f09, 0 0 10px #f09, 0 0 70px #f09, 0 0 40px #f09;
+  }
+}
+
+main {
+  background-color: #2f2f2f;
+  height: 80%;
+}
