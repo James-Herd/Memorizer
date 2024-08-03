@@ -7,6 +7,9 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
+  min-width: 1600px;
+  min-height: 1000px;
 }
 
 body {
@@ -23,64 +26,92 @@ header {
   background-color: #0d0d0d;
   color: #fff;
   width: 100%;
-  height: 20%;
+  height: 10%;
 }
 
 h1 {
   margin: 0;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.3rem;
+  font-size: 3rem;
 }
 
 .headingLetter1 {
-  animation: pulsate 2.51s ease-in-out infinite alternate;
+  animation: flicker 1.51s infinite;
 }
 
 .headingLetter2 {
-  animation: pulsate 2.21s ease-in-out infinite alternate;
+  animation: flicker 2.21s infinite;
 }
 
 .headingLetter3 {
-  animation: pulsate 1.91s ease-in-out infinite alternate;
+  animation: flicker 3.91s infinite;
 }
 
 .headingLetter4 {
-  animation: pulsate 1.51s ease-in-out infinite alternate;
+  animation: flicker 4.51s infinite;
 }
 
 .headingLetter5 {
-  animation: pulsate 2.1s ease-in-out infinite alternate;
+  animation: flicker 2.1s infinite;
 }
 
 .headingLetter6 {
-  animation: pulsate 1.81s ease-in-out infinite alternate;
+  animation: flicker 1.81s infinite;
 }
 
 .headingLetter7 {
-  animation: pulsate 2.51s ease-in-out infinite alternate;
+  animation: flicker 6.51s infinite;
 }
 
 .headingLetter8 {
-  animation: pulsate 1.91s ease-in-out infinite alternate;
+  animation: flicker 8.91s infinite;
 }
 
 .headingLetter9 {
-  animation: pulsate 2.21s ease-in-out infinite alternate;
+  animation: flicker 2.21s infinite;
 }
 
-@keyframes pulsate {
-  100% {
-    /* Larger blur radius */
-    text-shadow: 0 0 14px #fff, 0 0 21px #fff, 0 0 29px #fff, 0 0 40px #f09,
-      0 0 60px #f09, 0 0 20px #f09, 0 0 60px #f09, 0 0 50px #f09;
+@keyframes flicker {
+  0%,
+  48% {
+    opacity: 1;
   }
-  0% {
-    /* A slightly smaller blur radius */
-    text-shadow: 0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff, 0 0 38px #f09,
-      0 0 53px #f09, 0 0 10px #f09, 0 0 70px #f09, 0 0 40px #f09;
+  50%,
+  90% {
+    opacity: 0;
   }
 }
 
 main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background-color: #2f2f2f;
-  height: 80%;
+  height: 90%;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 36px;
+  min-width: 1600px;
+  max-width: 1600px;
+  min-height: 800px;
+  max-height: 800px;
+  /* border: 1px solid red; */
+}
+
+.gameCard {
+  width: 100px;
+  height: 100px;
+  border: 1px solid mediumpurple;
+  box-shadow: 4px 4px 10px 5px #0d0d0d;
+  border-radius: 5px;
+}
+
+.gameCard:hover {
+  box-shadow: 4px 4px 10px 5px mediumpurple;
 }
