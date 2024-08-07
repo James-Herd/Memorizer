@@ -86,8 +86,8 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-
   background-color: #2f2f2f;
+  /* background: linear-gradient(180deg, #2f2f2f, #0d0d0d); */
   height: 90%;
 }
 
@@ -105,13 +105,21 @@ section {
 }
 
 .gameCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-size: 1.2rem;
   width: 100px;
   height: 100px;
   border: 1px solid mediumpurple;
-  box-shadow: 4px 4px 10px 5px #0d0d0d;
+  box-shadow: 4px 4px 10px 5px #0d0d0d, -2px -2px 5px 3px mediumpurple;
   border-radius: 5px;
 }
 
 .gameCard:hover {
-  box-shadow: 4px 4px 10px 5px mediumpurple;
+  cursor: pointer;
+  box-shadow: 0px 0px 10px 5px mediumpurple;
 }
