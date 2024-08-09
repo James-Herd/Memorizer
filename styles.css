@@ -123,3 +123,7 @@ section {
   cursor: pointer;
   box-shadow: 0px 0px 10px 5px mediumpurple;
 }
+
+.hide {
+  display: none;
+}

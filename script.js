@@ -1,6 +1,4 @@
-const gamePanel = document.getElementById("gamePanel");
-
-const listOfWords = [
+const GAME_WORD_LIBRARY = [
   "apple",
   "bread",
   "chair",
@@ -195,58 +193,96 @@ const listOfWords = [
   "valid",
   "woven",
 ];
-const numberOfGameCardWords = 36;
+
+const gamePanel = document.getElementById("gamePanel");
+const numberOfGameCardWords = 36; // FUTURE USE FOR LEVEL SELECTION ???????
+const randomNumbers = getrandomNumbers();
+const gameCardWords = getgameCardWords(randomNumbers);
+
+let firstSelectedWordWithId = "";
+let firstSelectedWordWithoutId = "";
 
 function renderGameCards() {
-  const listOfRandomNumbers = generateListOfRandomNumbers();
-  const listOfGameCardWords = getListOfGameCardWords(listOfRandomNumbers);
+  let gameCardWordsCopy = [...gameCardWords];
 
-  //   for (let gameCardWord of listOfGameCardWords) {
-  //     let child = `<div class="gameCard">${gameCardWord}</div>`;
+  for (i = 0; i < gameCardWords.length; i++) {
+    let randomIndex = Math.floor(Math.random() * gameCardWordsCopy.length);
 
-  //     gamePanel.innerHTML += child;
-  //   }
+    let childElement = `<div id="${gameCardWordsCopy[randomIndex]}-${i}" class="gameCard" onclick="checkIsMatch('${gameCardWordsCopy[randomIndex]}-${i}')"><span class="hide">${gameCardWordsCopy[randomIndex]}</span></div>`;
+    gamePanel.innerHTML += childElement;
 
-  let copy = [...listOfGameCardWords];
-
-  for (i = 0; i < listOfGameCardWords.length; i++) {
-    let randomIndex = Math.floor(Math.random() * copy.length);
-
-    let child = `<div class="gameCard">${copy[randomIndex]}</div>`;
-    gamePanel.innerHTML += child;
-
-    copy.splice(randomIndex, 1);
+    gameCardWordsCopy.splice(randomIndex, 1);
   }
 }
 
-function generateListOfRandomNumbers() {
-  let listOfRandomNumbers = [];
+function getrandomNumbers() {
+  let randomNumbers = [];
 
   for (let i = 0; i < numberOfGameCardWords; i++) {
-    let randomNumber = Math.floor(Math.random() * listOfWords.length);
+    let randomNumber = Math.floor(Math.random() * GAME_WORD_LIBRARY.length);
 
-    if (listOfRandomNumbers.includes(randomNumber)) {
+    if (randomNumbers.includes(randomNumber)) {
       i--;
       continue;
     } else {
-      listOfRandomNumbers.push(randomNumber);
+      randomNumbers.push(randomNumber);
     }
   }
 
-  return listOfRandomNumbers;
+  return randomNumbers;
 }
 
-function getListOfGameCardWords(listOfRandomNumbers) {
-  let listOfGameCardWords = [];
+function getgameCardWords(randomNumbers) {
+  let gameCardWords = [];
 
-  for (let randomNumber of listOfRandomNumbers) {
-    listOfGameCardWords.push(
-      listOfWords[randomNumber],
-      listOfWords[randomNumber]
+  for (let randomNumber of randomNumbers) {
+    gameCardWords.push(
+      GAME_WORD_LIBRARY[randomNumber],
+      GAME_WORD_LIBRARY[randomNumber]
     );
   }
 
-  return listOfGameCardWords;
+  return gameCardWords;
+}
+
+async function checkIsMatch(selectedWordWithId) {
+  let selectedWordWithoutId = selectedWordWithId.replace(/-.*/, "");
+
+  if (firstSelectedWordWithoutId === "") {
+    document
+      .querySelector(
+        `
+      #${selectedWordWithId} span`
+      )
+      .classList.remove("hide");
+
+    firstSelectedWordWithId = selectedWordWithId;
+    firstSelectedWordWithoutId = selectedWordWithoutId;
+  } else if (firstSelectedWordWithoutId === selectedWordWithoutId) {
+    document
+      .querySelector(`#${selectedWordWithId} span`)
+      .classList.remove("hide");
+    firstSelectedWordWithId = "";
+    firstSelectedWordWithoutId = "";
+  } else {
+    document
+      .querySelector(`#${selectedWordWithId} span`)
+      .classList.remove("hide");
+
+    await sleep(2000); // momentarily show the two selected unmatching words before hiding them again
+
+    document.querySelector(`#${selectedWordWithId} span`).classList.add("hide");
+    document
+      .querySelector(`#${firstSelectedWordWithId} span`)
+      .classList.add("hide");
+
+    firstSelectedWordWithId = "";
+    firstSelectedWordWithoutId = "";
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 window.addEventListener("load", renderGameCards);
