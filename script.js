@@ -201,6 +201,7 @@ const gameCardWords = getgameCardWords(randomNumbers);
 
 let firstSelectedWordWithId = "";
 let firstSelectedWordWithoutId = "";
+let gameCardWordsWithIds = [];
 
 function renderGameCards() {
   let gameCardWordsCopy = [...gameCardWords];
@@ -210,6 +211,8 @@ function renderGameCards() {
 
     let childElement = `<div id="${gameCardWordsCopy[randomIndex]}-${i}" class="gameCard" onclick="checkIsMatch('${gameCardWordsCopy[randomIndex]}-${i}')"><span class="hide">${gameCardWordsCopy[randomIndex]}</span></div>`;
     gamePanel.innerHTML += childElement;
+
+    gameCardWordsWithIds.push(`${gameCardWordsCopy[randomIndex]}-${i}`);
 
     gameCardWordsCopy.splice(randomIndex, 1);
   }
@@ -249,35 +252,50 @@ async function checkIsMatch(selectedWordWithId) {
   let selectedWordWithoutId = selectedWordWithId.replace(/-.*/, "");
 
   if (firstSelectedWordWithoutId === "") {
-    document
-      .querySelector(
-        `
-      #${selectedWordWithId} span`
-      )
-      .classList.remove("hide");
+    document.getElementById(selectedWordWithId).style.pointerEvents = "none"; // ensure the same game card can't be selected twice
+    showGameCardWord(selectedWordWithId);
 
     firstSelectedWordWithId = selectedWordWithId;
     firstSelectedWordWithoutId = selectedWordWithoutId;
   } else if (firstSelectedWordWithoutId === selectedWordWithoutId) {
-    document
-      .querySelector(`#${selectedWordWithId} span`)
-      .classList.remove("hide");
+    showGameCardWord(selectedWordWithId);
+
     firstSelectedWordWithId = "";
     firstSelectedWordWithoutId = "";
   } else {
-    document
-      .querySelector(`#${selectedWordWithId} span`)
-      .classList.remove("hide");
-
+    showGameCardWord(selectedWordWithId);
+    disablePointer();
     await sleep(2000); // momentarily show the two selected unmatching words before hiding them again
-
-    document.querySelector(`#${selectedWordWithId} span`).classList.add("hide");
-    document
-      .querySelector(`#${firstSelectedWordWithId} span`)
-      .classList.add("hide");
+    enablePointer();
+    hideGameCardWord(selectedWordWithId);
+    hideGameCardWord(firstSelectedWordWithId);
 
     firstSelectedWordWithId = "";
     firstSelectedWordWithoutId = "";
+  }
+}
+
+function showGameCardWord(gameCardWordToShow) {
+  document
+    .querySelector(`#${gameCardWordToShow} span`)
+    .classList.remove("hide");
+}
+
+function hideGameCardWord(gameCardWordToHide) {
+  document.querySelector(`#${gameCardWordToHide} span`).classList.add("hide");
+}
+
+function disablePointer() {
+  for (let gameCardWordWithId of gameCardWordsWithIds) {
+    let gameCard = document.getElementById(gameCardWordWithId);
+    gameCard.style.pointerEvents = "none";
+  }
+}
+
+function enablePointer() {
+  for (let gameCardWordWithId of gameCardWordsWithIds) {
+    let gameCard = document.getElementById(gameCardWordWithId);
+    gameCard.style.pointerEvents = "auto";
   }
 }
 
