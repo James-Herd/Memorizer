@@ -202,6 +202,7 @@ const gameCardWords = getgameCardWords(randomNumbers);
 let firstSelectedWordWithId = "";
 let firstSelectedWordWithoutId = "";
 let gameCardWordsWithIds = [];
+let copyGameCardWordsWithIds = [...gameCardWordsWithIds];
 
 function renderGameCards() {
   let gameCardWordsCopy = [...gameCardWords];
@@ -252,40 +253,56 @@ async function checkIsMatch(selectedWordWithId) {
   let selectedWordWithoutId = selectedWordWithId.replace(/-.*/, "");
 
   if (firstSelectedWordWithoutId === "") {
-    document.getElementById(selectedWordWithId).style.pointerEvents = "none"; // ensure the same game card can't be selected twice
-    showGameCardWord(selectedWordWithId);
+    showWord(selectedWordWithId);
+    disablePointer(selectedWordWithId); // ensure the same game card can't be selected twice
 
     firstSelectedWordWithId = selectedWordWithId;
     firstSelectedWordWithoutId = selectedWordWithoutId;
   } else if (firstSelectedWordWithoutId === selectedWordWithoutId) {
-    showGameCardWord(selectedWordWithId);
+    showWord(selectedWordWithId);
+    disablePointer(selectedWordWithId);
+    removedMatchedWordsFromGameCardsWords(selectedWordWithId);
 
     firstSelectedWordWithId = "";
     firstSelectedWordWithoutId = "";
   } else {
-    showGameCardWord(selectedWordWithId);
+    showWord(selectedWordWithId);
     disablePointer();
-    await sleep(2000); // momentarily show the two selected unmatching words before hiding them again
-    enablePointer();
-    hideGameCardWord(selectedWordWithId);
-    hideGameCardWord(firstSelectedWordWithId);
+    await sleep(1000); // momentarily show the two selected unmatching words before hiding them again
+    enablePointer(); // TODO: make matched words no have their pointer re-enabled
+    hideWord(selectedWordWithId);
+    hideWord(firstSelectedWordWithId);
 
     firstSelectedWordWithId = "";
     firstSelectedWordWithoutId = "";
   }
 }
 
-function showGameCardWord(gameCardWordToShow) {
-  document
-    .querySelector(`#${gameCardWordToShow} span`)
-    .classList.remove("hide");
+function removedMatchedWordsFromGameCardsWords(selectedWordWithId) {
+  const firstMatchedWordOfPair = gameCardWordsWithIds.indexOf(
+    firstSelectedWordWithId
+  );
+  gameCardWordsWithIds.splice(firstMatchedWordOfPair, 1);
+  const secondMatchedWordOfPair =
+    gameCardWordsWithIds.indexOf(selectedWordWithId);
+  gameCardWordsWithIds.splice(secondMatchedWordOfPair, 1);
 }
 
-function hideGameCardWord(gameCardWordToHide) {
-  document.querySelector(`#${gameCardWordToHide} span`).classList.add("hide");
+function showWord(wordToShow) {
+  document.querySelector(`#${wordToShow} span`).classList.remove("hide");
 }
 
-function disablePointer() {
+function hideWord(wordToHide) {
+  document.querySelector(`#${wordToHide} span`).classList.add("hide");
+}
+
+function disablePointer(selectedWordWithId) {
+  if (selectedWordWithId) {
+    let gameCard = document.getElementById(selectedWordWithId);
+    gameCard.style.pointerEvents = "none";
+    return;
+  }
+
   for (let gameCardWordWithId of gameCardWordsWithIds) {
     let gameCard = document.getElementById(gameCardWordWithId);
     gameCard.style.pointerEvents = "none";
