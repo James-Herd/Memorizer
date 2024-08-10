@@ -220,9 +220,9 @@ async function renderGameCards() {
   await sleep(17); // required to prevent the first element from not fading-in
 
   // apply necessary cool fade-in effect
-  for (let x of gameCardWordsWithIds) {
-    let y = document.getElementById(x);
-    y.classList.add("fadeIn");
+  for (let gameCardWordWithId of gameCardWordsWithIds) {
+    let element = document.getElementById(gameCardWordWithId);
+    element.classList.add("fadeIn");
     await sleep(17);
   }
 
