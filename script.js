@@ -204,19 +204,30 @@ let firstSelectedWordWithoutId = "";
 let gameCardWordsWithIds = [];
 let copyGameCardWordsWithIds = [...gameCardWordsWithIds];
 
-function renderGameCards() {
+async function renderGameCards() {
   let gameCardWordsCopy = [...gameCardWords];
 
   for (i = 0; i < gameCardWords.length; i++) {
     let randomIndex = Math.floor(Math.random() * gameCardWordsCopy.length);
 
-    let childElement = `<div id="${gameCardWordsCopy[randomIndex]}-${i}" class="gameCard" onclick="checkIsMatch('${gameCardWordsCopy[randomIndex]}-${i}')"><span class="hide">${gameCardWordsCopy[randomIndex]}</span></div>`;
+    let childElement = `<div id="${gameCardWordsCopy[randomIndex]}-${i}" class="gameCard" onclick="checkIsMatchAndShowOrHideWordsAccordingly('${gameCardWordsCopy[randomIndex]}-${i}')"><span class="hide">${gameCardWordsCopy[randomIndex]}</span></div>`;
     gamePanel.innerHTML += childElement;
 
     gameCardWordsWithIds.push(`${gameCardWordsCopy[randomIndex]}-${i}`);
 
     gameCardWordsCopy.splice(randomIndex, 1);
   }
+  await sleep(17); // required to prevent the first element from not fading-in
+
+  // apply necessary cool fade-in effect
+  for (let x of gameCardWordsWithIds) {
+    let y = document.getElementById(x);
+    y.classList.add("fadeIn");
+    await sleep(17);
+  }
+
+  let x = document.getElementById(`${gameCardWordsCopy[randomIndex]}-${i}`);
+  x.classList.add("fadeIn");
 }
 
 function getrandomNumbers() {
@@ -249,7 +260,7 @@ function getgameCardWords(randomNumbers) {
   return gameCardWords;
 }
 
-async function checkIsMatch(selectedWordWithId) {
+async function checkIsMatchAndShowOrHideWordsAccordingly(selectedWordWithId) {
   let selectedWordWithoutId = selectedWordWithId.replace(/-.*/, "");
 
   if (firstSelectedWordWithoutId === "") {
@@ -269,7 +280,7 @@ async function checkIsMatch(selectedWordWithId) {
     showWord(selectedWordWithId);
     disablePointer();
     await sleep(1000); // momentarily show the two selected unmatching words before hiding them again
-    enablePointer(); // TODO: make matched words no have their pointer re-enabled
+    enablePointer();
     hideWord(selectedWordWithId);
     hideWord(firstSelectedWordWithId);
 
