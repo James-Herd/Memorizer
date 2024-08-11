@@ -204,30 +204,63 @@ let firstSelectedWordWithoutId = "";
 let gameCardWordsWithIds = [];
 let copyGameCardWordsWithIds = [...gameCardWordsWithIds];
 
-async function renderGameCards() {
+function renderGameCards() {
   let gameCardWordsCopy = [...gameCardWords];
 
   for (i = 0; i < gameCardWords.length; i++) {
     let randomIndex = Math.floor(Math.random() * gameCardWordsCopy.length);
 
-    let childElement = `<div id="${gameCardWordsCopy[randomIndex]}-${i}" class="gameCard" onclick="checkIsMatchAndShowOrHideWordsAccordingly('${gameCardWordsCopy[randomIndex]}-${i}')"><span class="hide">${gameCardWordsCopy[randomIndex]}</span></div>`;
+    let childElement = `<div id="${gameCardWordsCopy[randomIndex]}-${i}" class="gameCard" onclick="checkIsMatchAndShowOrHideWordsAccordingly('${gameCardWordsCopy[randomIndex]}-${i}')"><span class="gameWord">${gameCardWordsCopy[randomIndex]}</span></div>`;
     gamePanel.innerHTML += childElement;
 
     gameCardWordsWithIds.push(`${gameCardWordsCopy[randomIndex]}-${i}`);
-
     gameCardWordsCopy.splice(randomIndex, 1);
   }
-  await sleep(17); // required to prevent the first element from not fading-in
 
-  // apply necessary cool fade-in effect
+  disablePointer();
+  staggerFadingInAndOutGameCardsAndWords();
+}
+
+async function staggerFadingInAndOutGameCardsAndWords() {
+  await sleep(35); // required to prevent the first element from not fading-in
+
+  // stagger fading in of game cards
   for (let gameCardWordWithId of gameCardWordsWithIds) {
     let element = document.getElementById(gameCardWordWithId);
     element.classList.add("fadeIn");
-    await sleep(17);
+    await sleep(20);
   }
 
-  let x = document.getElementById(`${gameCardWordsCopy[randomIndex]}-${i}`);
-  x.classList.add("fadeIn");
+  // stagger fading in of game card words
+  for (let gameCardWordWithId of gameCardWordsWithIds) {
+    document
+      .querySelector(`#${gameCardWordWithId} span`)
+      .classList.add("fadeIn");
+    await sleep(20);
+  }
+
+  await sleep(10000); // allow player to see all game card words for a moment
+
+  // stagger fading out of game card words
+  for (let gameCardWordWithId of gameCardWordsWithIds) {
+    document
+      .querySelector(`#${gameCardWordWithId} span`)
+      .classList.remove("fadeIn");
+
+    await sleep(20);
+  }
+
+  await sleep(2000);
+
+  // need to remove 'gameWord' seperately and after removing 'fadeIn' to avoid rendering order bugs
+  for (let gameCardWordWithId of gameCardWordsWithIds) {
+    document
+      .querySelector(`#${gameCardWordWithId} span`)
+      .classList.remove("gameWord");
+  }
+
+  hideWord(); // hide all word(S) by not passing an argument. Called at end of this func as would be called too soon otherwise with this func being async.
+  enablePointer(); // Called here because otherwise you can click on words while they are all displayed and they will be hidden. Another async function workaround.
 }
 
 function getrandomNumbers() {
@@ -264,12 +297,14 @@ async function checkIsMatchAndShowOrHideWordsAccordingly(selectedWordWithId) {
   let selectedWordWithoutId = selectedWordWithId.replace(/-.*/, "");
 
   if (firstSelectedWordWithoutId === "") {
+    // first of word pair selected
     showWord(selectedWordWithId);
     disablePointer(selectedWordWithId); // ensure the same game card can't be selected twice
 
     firstSelectedWordWithId = selectedWordWithId;
     firstSelectedWordWithoutId = selectedWordWithoutId;
   } else if (firstSelectedWordWithoutId === selectedWordWithoutId) {
+    // matching word pair selected
     showWord(selectedWordWithId);
     disablePointer(selectedWordWithId);
     removedMatchedWordsFromGameCardsWords(selectedWordWithId);
@@ -277,9 +312,13 @@ async function checkIsMatchAndShowOrHideWordsAccordingly(selectedWordWithId) {
     firstSelectedWordWithId = "";
     firstSelectedWordWithoutId = "";
   } else {
+    // unmatching word pair selected
+
     showWord(selectedWordWithId);
     disablePointer();
+
     await sleep(1000); // momentarily show the two selected unmatching words before hiding them again
+
     enablePointer();
     hideWord(selectedWordWithId);
     hideWord(firstSelectedWordWithId);
@@ -304,7 +343,14 @@ function showWord(wordToShow) {
 }
 
 function hideWord(wordToHide) {
-  document.querySelector(`#${wordToHide} span`).classList.add("hide");
+  if (wordToHide) {
+    document.querySelector(`#${wordToHide} span`).classList.add("hide");
+    return;
+  }
+
+  for (const gameCardWordWithId of gameCardWordsWithIds) {
+    document.querySelector(`#${gameCardWordWithId} span`).classList.add("hide");
+  }
 }
 
 function disablePointer(selectedWordWithId) {
