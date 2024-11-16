@@ -104,6 +104,30 @@ section {
   /* border: 1px solid red; */
 }
 
+aside {
+  min-width: 160px;
+  max-width: 160px;
+}
+
+.btn {
+  width: 140px;
+  height: 50px;
+  margin: 10px 20px 10px 0px;
+  padding: 0px;
+  font-size: 1.55rem;
+  cursor: pointer;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  color: #fff;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #4776e6, #8e54e9);
+}
+
+.btn:hover {
+  background: linear-gradient(45deg, #8e54e9, #4776e6);
+  box-shadow: 0px 0px 2px 2px #fff;
+}
+
 .gameCard {
   display: flex;
   align-items: center;
